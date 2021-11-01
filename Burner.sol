@@ -800,16 +800,19 @@ library SafeBEP20 {
     }
 }
 
-// File: contracts/SmartChefInitializable.sol
+// File: contracts/BurnerInitializable.sol
 
 pragma solidity 0.6.12;
 
-contract SmartChefInitializable is Ownable, ReentrancyGuard {
+contract BurnerInitializable is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
     // The address of the smart chef factory
     address public SMART_CHEF_FACTORY;
+    
+    // The address that the burning tokens will go to
+    address public BURN_FACTORY;
 
     // Whether a limit is set for users
     bool public hasUserLimit;
@@ -832,7 +835,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
     // The pool limit (0 if none)
     uint256 public poolLimitPerUser;
 
-    // CAKE tokens created per block.
+    // Reward tokens created per block.
     uint256 public rewardPerBlock;
 
     // The precision factor
@@ -841,8 +844,8 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
     // The reward token
     IBEP20 public rewardToken;
 
-    // The staked token
-    IBEP20 public stakedToken;
+    // The burned token
+    IBEP20 public burnedToken;
 
     // Info of each user that stakes tokens (stakedToken)
     mapping(address => UserInfo) public userInfo;
@@ -863,6 +866,7 @@ contract SmartChefInitializable is Ownable, ReentrancyGuard {
 
     constructor() public {
         SMART_CHEF_FACTORY = msg.sender;
+        BURN_FACTORY = _burn address;
     }
 
     /*
