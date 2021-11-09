@@ -11,26 +11,24 @@ import "./ReceiptToken.sol";
 // import "@nomiclabs/buidler/console.sol";
 
 interface IMigratorChef {
-    // Perform LP token migration from legacy PancakeSwap to CakeSwap.
-    // Take the current LP token address and return the new LP token address.
-    // Migrator should have full access to the caller's LP token.
+    // Migrator must have full access to the caller's LP token.
     // Return the new LP token address.
     //
-    // XXX Migrator must have allowance access to PancakeSwap LP tokens.
-    // CakeSwap must mint EXACTLY the same amount of CakeSwap LP tokens or
+    // XXX Migrator must have allowance access to  LP tokens.
+    // CSwap must mint EXACTLY the same amount of  LP tokens or
     // else something bad will happen. Traditional PancakeSwap does not
     // do that so be careful!
     function migrate(IBEP20 token) external returns (IBEP20);
 }
 
-// MasterChef is the master of Cake. He can make Cake and he is a fair guy.
+// MagmaVault is the master of Volcan0🌋. He can make VoFi and he is a fair guy.
 //
 // Note that it's ownable and the owner wields tremendous power. The ownership
-// will be transferred to a governance smart contract once CAKE is sufficiently
+// will be transferred to a governance smart contract once VoFi is sufficiently
 // distributed and the community can show to govern itself.
 //
 // Have fun reading it. Hopefully it's bug-free. God bless.
-contract MasterChef is Ownable {
+contract MagmaVault is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
@@ -39,13 +37,13 @@ contract MasterChef is Ownable {
         uint256 amount;     // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
         //
-        // We do some fancy math here. Basically, any point in time, the amount of CAKEs
+        // We do some fancy math here. Basically, any point in time, the amount of VoFis
         // entitled to a user but is pending to be distributed is:
         //
         //   pending reward = (user.amount * pool.accCakePerShare) - user.rewardDebt
         //
         // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-        //   1. The pool's `accCakePerShare` (and `lastRewardBlock`) gets updated.
+        //   1. The pool's `accVoFiPerShare` (and `lastRewardBlock`) gets updated.
         //   2. User receives the pending reward sent to his/her address.
         //   3. User's `amount` gets updated.
         //   4. User's `rewardDebt` gets updated.
@@ -54,14 +52,14 @@ contract MasterChef is Ownable {
     // Info of each pool.
     struct PoolInfo {
         IBEP20 lpToken;           // Address of LP token contract.
-        uint256 allocPoint;       // How many allocation points assigned to this pool. CAKEs to distribute per block.
+        uint256 allocPoint;       // How many allocation points assigned to this pool. VoFis to distribute per block.
         uint256 lastRewardBlock;  // Last block number that CAKEs distribution occurs.
-        uint256 accCakePerShare; // Accumulated CAKEs per share, times 1e12. See below.
+        uint256 accVoFiPerShare; // Accumulated VoFis per share, times 1e12. See below.
     }
 
-    // The CAKE TOKEN!
-    CakeToken public cake;
-    // The SYRUP TOKEN!
+    // The Vofi TOKEN!
+    VoFiToken public vofi;
+    // The Receipt TOKEN!
     SyrupBar public syrup;
     // Dev address.
     address public devaddr;
