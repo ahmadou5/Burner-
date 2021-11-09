@@ -16,7 +16,7 @@ interface IMigratorChef {
     //
     // XXX Migrator must have allowance access to  LP tokens.
     // CSwap must mint EXACTLY the same amount of  LP tokens or
-    // else something bad will happen. Traditional PancakeSwap does not
+    // else something bad will happen. Traditional Swap does not.
     // do that so be careful!
     function migrate(IBEP20 token) external returns (IBEP20);
 }
@@ -27,7 +27,7 @@ interface IMigratorChef {
 // will be transferred to a governance smart contract once VoFi is sufficiently
 // distributed and the community can show to govern itself.
 //
-// Have fun reading it. Hopefully it's bug-free. God bless.
+// Have fun reading it. Hopefully Insha Allah it's bug-free. God bless Masha Allah.
 contract MagmaVault is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
@@ -40,7 +40,7 @@ contract MagmaVault is Ownable {
         // We do some fancy math here. Basically, any point in time, the amount of VoFis
         // entitled to a user but is pending to be distributed is:
         //
-        //   pending reward = (user.amount * pool.accCakePerShare) - user.rewardDebt
+        //   pending reward = (user.amount * pool.accVoFiPerShare) - user.rewardDebt
         //
         // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
         //   1. The pool's `accVoFiPerShare` (and `lastRewardBlock`) gets updated.
@@ -60,12 +60,12 @@ contract MagmaVault is Ownable {
     // The Vofi TOKEN!
     VoFiToken public vofi;
     // The Receipt TOKEN!
-    SyrupBar public syrup;
+    Receipt public receipt;
     // Dev address.
     address public devaddr;
-    // CAKE tokens created per block.
-    uint256 public cakePerBlock;
-    // Bonus muliplier for early cake makers.
+    // VoFi tokens created per block.
+    uint256 public VoFiPerBlock;
+    // Bonus muliplier for early VoFi makers.
     uint256 public BONUS_MULTIPLIER = 1;
     // The migrator contract. It has a lot of power. Can only be set through governance (owner).
     IMigratorChef public migrator;
@@ -76,7 +76,7 @@ contract MagmaVault is Ownable {
     mapping (uint256 => mapping (address => UserInfo)) public userInfo;
     // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // The block number when CAKE mining starts.
+    // The block number when VoFi mining starts.
     uint256 public startBlock;
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
@@ -84,21 +84,21 @@ contract MagmaVault is Ownable {
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
     constructor(
-        CakeToken _cake,
-        SyrupBar _syrup,
+        VoFiToken _vofi,
+        Receipt _receipt,
         address _devaddr,
-        uint256 _cakePerBlock,
+        uint256 _vofiPerBlock,
         uint256 _startBlock
     ) public {
-        cake = _cake;
-        syrup = _syrup;
+        vofi = _vofi;
+        receipt = _receipt;
         devaddr = _devaddr;
-        cakePerBlock = _cakePerBlock;
+        vofiPerBlock = _vofiPerBlock;
         startBlock = _startBlock;
 
         // staking pool
         poolInfo.push(PoolInfo({
-            lpToken: _cake,
+            lpToken: _vofi,
             allocPoint: 1000,
             lastRewardBlock: startBlock,
             accCakePerShare: 0
